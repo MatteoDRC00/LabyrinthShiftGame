@@ -2,7 +2,7 @@ package entity;
 
 class Wall extends Tile {
     public Wall() {
-        this.walkable = false;
+        super("Wall",false);
     }
 
     @Override

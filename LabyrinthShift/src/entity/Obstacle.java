@@ -3,7 +3,7 @@ package entity;
 
 class Obstacle extends Tile {
     public Obstacle() {
-        this.walkable = true;
+       super("Obstacle", true);
     }
 
     @Override

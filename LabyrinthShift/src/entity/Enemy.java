@@ -1,8 +1,9 @@
 package entity;
 
+
 class Enemy extends Tile {
     public Enemy() {
-        this.walkable = true;
+        super("Enemy", true);
     }
 
     @Override

@@ -2,7 +2,7 @@ package entity;
 
 public class Hallway extends Tile {
     public Hallway() {
-        this.walkable = true;
+      super("Hallway", true);
     }
 
     @Override

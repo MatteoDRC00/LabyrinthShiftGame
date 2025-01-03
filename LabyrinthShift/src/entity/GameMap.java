@@ -1,104 +1,95 @@
 package entity;
 
 import entity.Enum.DifficultyType;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 public class GameMap {
-    private Tile [][]map;
+
+    private Tile[][] map;
     private DifficultyType difficulty;
-    private int num_percorsi;
-    private int num_obstacles;
-    private int num_enemy;
 
-    protected static Random random = new Random();
-
-    public GameMap(DifficultyType difficulty) {
+    public GameMap(Tile[][] map, DifficultyType difficulty) {
+        this.map = map;
         this.difficulty = difficulty;
     }
 
-    public void generateMaze(){
-        int length= 10;
-        int width= 10;
 
 
-        // Inizializza il labirinto con tutte celle come muri
-        for (int y = 0; y < length; y++) {
-            for (int x = 0; x < width; x++) {
-                map[y][x] = new Wall();
-            }}
+    public static GameMap generateMaze(DifficultyType difficulty) {
+        int size = difficulty.getSize();
+        Tile[][] map = new Tile[size][size];
+        Random random = new Random();
 
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                map[i][j] = random.nextBoolean() ? new Wall() : new Hallway();
+            }
+        }
 
-        // Inizia dalla cella in alto a sinistra
-        carvePath(map, 1, 1, width, length);
+        return new GameMap(map, difficulty);
     }
 
-    private void carvePath(Tile[][] maze, int x, int y, int width, int height) {
-        maze[y][x] = new Hallway(); // Rendi la cella un passaggio
 
-        // Ottieni una lista di direzioni casuali
-        List<int[]> directions = new ArrayList<>();
-        directions.add(new int[] {0, -2}); // Su
-        directions.add(new int[] {2, 0});  // Destra
-        directions.add(new int[] {0, 2});  // Giù
-        directions.add(new int[] {-2, 0}); // Sinistra
-        Collections.shuffle(directions, new Random());
 
-        // Prova ogni direzione
-        for (int[] dir : directions) {
-            int nx = x + dir[0];
-            int ny = y + dir[1];
-
-            // Controlla se la cella successiva è valida
-            if (nx > 0 && nx < width - 1 && ny > 0 && ny < height - 1 && maze[ny][nx] instanceof Wall) {
-                // Rompi il muro tra le celle
-                maze[y + dir[1] / 2][x + dir[0] / 2] = new Hallway();
-                carvePath(maze, nx, ny, width, height); // Ricorsione
+    public void displayFullMap(int playerX, int playerY) {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                if (i == playerX && j == playerY) {
+                    // Posizione del giocatore
+                    System.out.print("G"); // Verde
+                } else if (i == 0 && j == 0) {
+                    // Partenza
+                    System.out.print("P"); // Blu
+                } else if (i == map.length - 1 && j == map[i].length - 1) {
+                    // Arrivo
+                    System.out.print("A"); // Rosso
+                } else if (map[i][j] != null) {
+                    System.out.print(map[i][j].getTileType().charAt(0) + " ");
+                } else {
+                    System.out.print(". "); // Cella vuota
+                }
             }
+            System.out.println();
         }
     }
 
+    public void displayLimitedMap(int playerX, int playerY) {
+        for (int i = Math.max(0, playerX - 1); i <= Math.min(map.length - 1, playerX + 1); i++) {
+            for (int j = Math.max(0, playerY - 1); j <= Math.min(map[i].length - 1, playerY + 1); j++) {
+                if (i == playerX && j == playerY) {
+                    // Posizione del giocatore
+                    System.out.print("G");
+                } else if (i == 0 && j == 0) {
+                    // Partenza
+                    System.out.print("P");
+                } else if (i == map.length - 1 && j == map[i].length - 1) {
+                    // Arrivo
+                    System.out.print("A ");
+                } else if (map[i][j] != null) {
+                    System.out.print(map[i][j].getTileType().charAt(0) + " ");
+                } else {
+                    System.out.print(". "); // Cella vuota
+                }
+            }
+            System.out.println();
+        }
+    }
+
+
+    public boolean movePlayer(String direction, int playerX, int playerY) {
+        // Logica di movimento del giocatore
+        return playerX == map.length - 1 && playerY == map[0].length - 1;
+    }
 
     public Tile[][] getMap() {
         return map;
     }
 
-    public void setMap(Tile[][] map) {
-        this.map = map;
+    public int getSize() {
+        return map.length;
     }
 
     public DifficultyType getDifficulty() {
         return difficulty;
-    }
-
-    public void setDifficulty(DifficultyType difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    public int getNum_percorsi() {
-        return num_percorsi;
-    }
-
-    public void setNum_percorsi(int num_percorsi) {
-        this.num_percorsi = num_percorsi;
-    }
-
-    public int getNum_obstacles() {
-        return num_obstacles;
-    }
-
-    public void setNum_obstacles(int num_obstacles) {
-        this.num_obstacles = num_obstacles;
-    }
-
-    public int getNum_enemy() {
-        return num_enemy;
-    }
-
-    public void setNum_anemy(int num_enemy) {
-        this.num_enemy = num_enemy;
     }
 }
