@@ -21,4 +21,12 @@ public enum DifficultyType {
     public int getSize() {
         return size;
     }
+
+    public int getObstacles() {
+        return obstacles;
+    }
+
+    public int getEnemies() {
+        return enemies;
+    }
 }
